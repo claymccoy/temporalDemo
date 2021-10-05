@@ -1,6 +1,7 @@
 package com.claymccoy.temporalDemo.hello
 
 import io.temporal.activity.ActivityOptions
+import io.temporal.workflow.Async
 import io.temporal.workflow.Workflow
 import java.time.Duration
 
@@ -10,6 +11,12 @@ class GreetingWorkflowImpl : GreetingWorkflow {
             ActivityOptions.newBuilder().setStartToCloseTimeout(Duration.ofSeconds(2)).build())
 
     override fun getGreeting(greeting: Greeting): String {
-        return activities.composeGreeting(GreetingParams("Hello", greeting.name))
+
+        val hello = Async.function(activities::composeGreeting, GreetingParams("Hello", greeting.name))
+        val bye = Async.function(activities::composeGreeting, GreetingParams("Bye", greeting.name))
+        return """
+            ${hello.get()}
+            ${bye.get()}
+            """.trimIndent()
     }
 }
