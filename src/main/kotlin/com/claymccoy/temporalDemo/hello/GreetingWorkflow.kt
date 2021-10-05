@@ -6,5 +6,9 @@ import io.temporal.workflow.WorkflowMethod
 @WorkflowInterface
 interface GreetingWorkflow {
     @WorkflowMethod
-    fun getGreeting(name: String): String
+    fun getGreeting(greeting: Greeting): String
 }
+
+data class Greeting(
+        val name: String
+)

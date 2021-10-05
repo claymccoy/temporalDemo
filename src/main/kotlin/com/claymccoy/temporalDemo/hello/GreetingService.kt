@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component
 class GreetingService(private val greetingWorkflow: GreetingWorkflow) {
 
     fun greet(name: String) : String {
-        return greetingWorkflow.getGreeting(name)
+        return greetingWorkflow.getGreeting(Greeting(name))
     }
 
 }

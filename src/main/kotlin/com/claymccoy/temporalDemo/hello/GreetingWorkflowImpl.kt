@@ -9,7 +9,7 @@ class GreetingWorkflowImpl : GreetingWorkflow {
             GreetingActivities::class.java,
             ActivityOptions.newBuilder().setStartToCloseTimeout(Duration.ofSeconds(2)).build())
 
-    override fun getGreeting(name: String): String {
-        return activities.composeGreeting("Hello", name)
+    override fun getGreeting(greeting: Greeting): String {
+        return activities.composeGreeting("Hello", greeting.name)
     }
 }
