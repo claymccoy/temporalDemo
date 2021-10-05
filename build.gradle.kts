@@ -22,6 +22,7 @@ dependencies {
 	implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
 
 	implementation("io.temporal:temporal-sdk:1.3.1")
+	implementation("io.temporal:temporal-kotlin:1.3.1")
 
 
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
