@@ -10,6 +10,6 @@ class GreetingWorkflowImpl : GreetingWorkflow {
             ActivityOptions.newBuilder().setStartToCloseTimeout(Duration.ofSeconds(2)).build())
 
     override fun getGreeting(greeting: Greeting): String {
-        return activities.composeGreeting("Hello", greeting.name)
+        return activities.composeGreeting(GreetingParams("Hello", greeting.name))
     }
 }
