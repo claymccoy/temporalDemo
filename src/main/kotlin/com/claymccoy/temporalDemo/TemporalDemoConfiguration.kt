@@ -1,9 +1,7 @@
 package com.claymccoy.temporalDemo
 
-import com.claymccoy.temporalDemo.hello.GreetingWorkflow
 import io.temporal.client.WorkflowClient
 import io.temporal.client.WorkflowClientOptions
-import io.temporal.client.WorkflowOptions
 import io.temporal.common.converter.DefaultDataConverter
 import io.temporal.common.converter.JacksonJsonPayloadConverter
 import io.temporal.common.converter.KotlinObjectMapperFactory
@@ -13,11 +11,6 @@ import org.springframework.context.annotation.Configuration
 
 @Configuration
 class TemporalDemoConfiguration {
-
-    companion object {
-        val taskQueue = "HelloActivityTaskQueue"
-        val workflowId = "HelloActivityWorkflow"
-    }
 
     @Bean
     fun workflowClientOptions(): WorkflowClientOptions {
@@ -32,14 +25,5 @@ class TemporalDemoConfiguration {
         return WorkflowClient.newInstance(service, workflowClientOptions)
     }
 
-    @Bean
-    fun greetingWorkflow(workflowClient: WorkflowClient): GreetingWorkflow {
-        return workflowClient.newWorkflowStub(
-                GreetingWorkflow::class.java,
-                WorkflowOptions.newBuilder()
-                        .setWorkflowId(workflowId)
-                        .setTaskQueue(taskQueue)
-                        .build())
-    }
 
 }

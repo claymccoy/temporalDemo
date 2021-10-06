@@ -11,7 +11,7 @@ class StartWorkflowWorker(private val workflowClient: WorkflowClient) : Initiali
 
     override fun afterPropertiesSet() {
         val factory = WorkerFactory.newInstance(workflowClient)
-        val worker = factory.newWorker(TemporalDemoConfiguration.taskQueue)
+        val worker = factory.newWorker(GreetingService.taskQueue)
         worker.registerWorkflowImplementationTypes(GreetingWorkflowImpl::class.java)
         worker.registerActivitiesImplementations(GreetingActivitiesImpl())
         factory.start()
