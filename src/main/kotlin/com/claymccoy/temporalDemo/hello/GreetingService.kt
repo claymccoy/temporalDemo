@@ -16,9 +16,9 @@ class GreetingService(private val workflowClient: WorkflowClient) {
         return getWorkflow().getGreeting(Greeting(name))
     }
 
-    fun getWorkflow(): GreetingWorkflow {
+    fun getWorkflow(): DeploymentWorkflow {
         return workflowClient.newWorkflowStub(
-                GreetingWorkflow::class.java,
+                DeploymentWorkflow::class.java,
                 WorkflowOptions.newBuilder()
                         .setWorkflowId(workflowId)
                         .setTaskQueue(taskQueue)
