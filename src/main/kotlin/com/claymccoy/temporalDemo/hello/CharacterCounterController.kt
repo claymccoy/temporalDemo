@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @RequestMapping("/chars")
-class CharacterCountController(private val letterCountService: LetterCountService) {
+class CharacterCounterController(private val letterCountService: LetterCountService) {
 
     @GetMapping("count")
     fun count(@RequestParam message: String): String {

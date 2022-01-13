@@ -6,12 +6,9 @@ import io.temporal.workflow.WorkflowInterface
 import io.temporal.workflow.WorkflowMethod
 
 @WorkflowInterface
-interface CharacterCountWorkflow {
+interface CharCounterWorkflow {
     @WorkflowMethod
     fun start(options: CharacterCountWorkflowOptions)
-
-    @QueryMethod
-    fun getTotals() : List<CharacterCount>
 
     @QueryMethod
     fun getHistory(limit: Int) : List<HistoryMessage>
@@ -25,15 +22,10 @@ interface CharacterCountWorkflow {
 }
 
 data class CharacterCountWorkflowOptions (
-        val validCharacters: List<Char>
-)
-
-data class CharacterCount (
-        val character: Char,
-        val count: Int
+        val validCharacters: Set<Char>
 )
 
 data class HistoryMessage (
         val message: String,
-        val charCounts: List<CharacterCount>
+        val charCounts: Set<CharacterCount>
 )

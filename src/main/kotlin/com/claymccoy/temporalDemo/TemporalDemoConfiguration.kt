@@ -1,7 +1,8 @@
 package com.claymccoy.temporalDemo
 
-import com.claymccoy.temporalDemo.hello.CharacterCountActivitiesImpl
-import com.claymccoy.temporalDemo.hello.CharacterCountWorkflowImpl
+import com.claymccoy.temporalDemo.hello.CharActivitiesImpl
+import com.claymccoy.temporalDemo.hello.CharCounterWorkflowImpl
+import com.claymccoy.temporalDemo.hello.CharStateWorkflowImpl
 import io.temporal.client.WorkflowClient
 import io.temporal.client.WorkflowClientOptions
 import io.temporal.common.converter.DefaultDataConverter
@@ -16,7 +17,7 @@ import org.springframework.context.annotation.Configuration
 class TemporalDemoConfiguration {
 
     companion object {
-        val taskQueue = "LetterCountTaskQueue"
+        val taskQueue = "LetterCounterTaskQueue"
     }
 
     @Bean
@@ -32,8 +33,11 @@ class TemporalDemoConfiguration {
         val workflowClient = WorkflowClient.newInstance(service, workflowClientOptions)
         val factory = WorkerFactory.newInstance(workflowClient)
         val worker = factory.newWorker(taskQueue)
-        worker.registerWorkflowImplementationTypes(CharacterCountWorkflowImpl::class.java)
-        worker.registerActivitiesImplementations(CharacterCountActivitiesImpl())
+        worker.registerWorkflowImplementationTypes(
+                CharCounterWorkflowImpl::class.java,
+                CharStateWorkflowImpl::class.java
+        )
+        worker.registerActivitiesImplementations(CharActivitiesImpl(workflowClient))
         factory.start()
         return workflowClient
     }
