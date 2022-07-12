@@ -1,9 +1,11 @@
 package com.claymccoy.temporalDemo.hello
 
 import com.claymccoy.temporalDemo.TemporalDemoConfiguration
+import io.temporal.api.common.v1.WorkflowExecution
 import io.temporal.api.filter.v1.WorkflowTypeFilter
-import io.temporal.api.workflowservice.v1.ListOpenWorkflowExecutionsRequest
-import io.temporal.api.workflowservice.v1.ListWorkflowExecutionsRequest
+import io.temporal.api.query.v1.WorkflowQuery
+import io.temporal.api.taskqueue.v1.TaskQueue
+import io.temporal.api.workflowservice.v1.*
 import io.temporal.client.WorkflowClient
 import io.temporal.client.WorkflowExecutionAlreadyStarted
 import io.temporal.client.WorkflowOptions
@@ -23,8 +25,6 @@ class LetterCountService(private val workflowClient: WorkflowClient) : Initializ
                         .setTaskQueue(TemporalDemoConfiguration.taskQueue)
                         .build())
 
-    private val service = WorkflowServiceStubs.newInstance()
-
     override fun afterPropertiesSet() {
         val options = CharacterCountWorkflowOptions(
                 "abcdefghijklmnopqrstuvwxyz".toCharArray().asList().toSet()
@@ -42,6 +42,51 @@ class LetterCountService(private val workflowClient: WorkflowClient) : Initializ
     }
 
     fun totals(): List<CharacterCount> {
+        val service = workflowClient.workflowServiceStubs
+
+        val nsResponse = service.blockingStub().describeNamespace(
+                DescribeNamespaceRequest.newBuilder()
+                        .setNamespace(workflowClient.options.namespace)
+                        .build()
+        )
+
+        val tqResponse = service.blockingStub().describeTaskQueue(
+                DescribeTaskQueueRequest.newBuilder()
+                        .setNamespace(workflowClient.options.namespace)
+                        .setTaskQueue(TaskQueue.newBuilder().setName(TemporalDemoConfiguration.taskQueue).build())
+                        .build()
+        )
+
+        val wfResponse = service.blockingStub().describeWorkflowExecution(
+                DescribeWorkflowExecutionRequest.newBuilder()
+                        .setNamespace(workflowClient.options.namespace)
+                        .setExecution(WorkflowExecution.newBuilder()
+                                .setWorkflowId("LetterCounter")
+                                .build())
+                        .build()
+        )
+
+        val wfhResponse = service.blockingStub().getWorkflowExecutionHistory(
+                GetWorkflowExecutionHistoryRequest.newBuilder()
+                        .setNamespace(workflowClient.options.namespace)
+                        .setExecution(WorkflowExecution.newBuilder()
+                                .setWorkflowId("LetterCounter")
+                                .build())
+                        .build()
+        )
+
+        val qwfResponse = service.blockingStub().queryWorkflow(QueryWorkflowRequest.newBuilder()
+                .setNamespace(workflowClient.options.namespace)
+                .setExecution(WorkflowExecution.newBuilder()
+                        .setWorkflowId("LetterCounter")
+                        .build())
+                .setQuery(WorkflowQuery.newBuilder()
+                        .setQueryType("__stack_trace")
+                        .build())
+                .build());
+
+
+
         val request = ListOpenWorkflowExecutionsRequest.newBuilder()
                 .setNamespace(workflowClient.options.namespace)
                 .setTypeFilter(WorkflowTypeFilter.newBuilder().setName(CharStateWorkflow::class.java.simpleName))
